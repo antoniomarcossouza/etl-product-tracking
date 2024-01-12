@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  postgresql:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgresql:/var/lib/postgresql/data 
+    networks:
+      - db-network
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8888:80"
+    volumes:
+      - ./volumes/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgresql
+    networks:
+      - db-network
+
+networks: 
+  db-network:
+    driver: bridge
