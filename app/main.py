@@ -21,11 +21,19 @@ def build_sql_insert(table_name: str, columns: list, values: list):
 def build_query(file_id: str, row: pd.Series):
     """Constrói a query SQL"""
 
-    file_id = datetime.strptime(file_id, "%Y%m%d-%H%M%S%f").strftime("%Y-%m-%d %H:%M:%S.%f")
+    file_id = datetime.strptime(file_id, "%Y%m%d-%H%M%S%f").strftime(
+        "%Y-%m-%d %H:%M:%S.%f"
+    )
     op_id = row["oid__id"]
-    created_at = datetime.fromtimestamp(row["createdAt"]).strftime("%Y-%m-%d %H:%M:%S.%f")
-    updated_at = datetime.fromtimestamp(row["updatedAt"]).strftime("%Y-%m-%d %H:%M:%S.%f")
-    last_sync = datetime.fromtimestamp(row["lastSyncTracker"]).strftime("%Y-%m-%d %H:%M:%S.%f")
+    created_at = datetime.fromtimestamp(row["createdAt"]).strftime(
+        "%Y-%m-%d %H:%M:%S.%f"
+    )
+    updated_at = datetime.fromtimestamp(row["updatedAt"]).strftime(
+        "%Y-%m-%d %H:%M:%S.%f"
+    )
+    last_sync = datetime.fromtimestamp(row["lastSyncTracker"]).strftime(
+        "%Y-%m-%d %H:%M:%S.%f"
+    )
 
     print(
         build_sql_insert(
