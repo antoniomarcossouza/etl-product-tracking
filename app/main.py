@@ -13,7 +13,12 @@ def build_sql_insert(table_name: str, columns: list, values: list):
     """Constrói o comando SQL de inserção"""
 
     columns = ", ".join(columns)
-    values = ", ".join(values)
+    values = ", ".join(
+        [
+            f"'{v}'" if isinstance(v, str) else "NULL" if v is None else str(v)
+            for v in values
+        ]
+    )
 
     return f"INSERT INTO {table_name} ({columns}) VALUES ({values});"
 
