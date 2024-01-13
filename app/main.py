@@ -47,6 +47,43 @@ def build_query(file_id: str, row: pd.Series):
         )
     )
 
+    for item in ast.literal_eval(row["array_trackingEvents"]):
+        created_at = datetime.fromtimestamp(
+            (item["createdAt"]["$date"] / 1000)
+        ).strftime("%Y-%m-%d %H:%M:%S.%f")
+        tracking_code = item["trackingCode"]
+        status = item["status"]
+        description = item["description"]
+        tracker_type = item["trackerType"]
+        origin = item["from"]
+        destination = item["to"]
+
+        print(
+            build_sql_insert(
+                table_name="tracking_events",
+                columns=[
+                    "op_id",
+                    "tracking_code",
+                    "created_at",
+                    "status",
+                    "description",
+                    "tracker_type",
+                    "from",
+                    "to",
+                ],
+                values=[
+                    op_id,
+                    tracking_code,
+                    created_at,
+                    status,
+                    description,
+                    tracker_type,
+                    origin,
+                    destination,
+                ],
+            )
+        )
+
 
 def process_file(csv_file: str):
     """Lê o arquivo CSV, processa as informações e deleta o arquivo"""
@@ -57,10 +94,6 @@ def process_file(csv_file: str):
     for _, row in df.iterrows():
         build_query(file_name, row)
         break
-
-    # for _, value in df["array_trackingEvents"].items():
-    #     tracking_events = ast.literal_eval(value)
-    #     break
 
 
 if __name__ == "__main__":
