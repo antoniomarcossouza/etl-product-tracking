@@ -8,22 +8,22 @@ from datetime import datetime
 import pandas as pd
 
 
-def build_sql_insert(table_name: str, columns: list, values: list):
-    """Constrói o comando SQL de inserção"""
-
-    columns = ", ".join(columns)
-    values = ", ".join(
-        [
-            f"'{v}'" if isinstance(v, str) else "NULL" if v is None else str(v)
-            for v in values
-        ]
-    )
-
-    return f"INSERT INTO {table_name} ({columns}) VALUES ({values});"
-
-
 def build_query(row: pd.Series):
-    """Constrói a query SQL"""
+    """Constrói a query para inserir a linha do DataFrame"""
+
+    def create_upsert(table_name: str, columns: list, values: list):
+        """Constrói o INSERT"""
+
+        columns = ", ".join(columns)
+        values = ", ".join(
+            [
+                f"'{v}'" if isinstance(v, str) else "NULL" if v is None else str(v)
+                for v in values
+            ]
+        )
+        set_values = [f"{c} = excluded.{c}" for c in columns.split(", ")]
+
+        return f"INSERT INTO {table_name} ({columns}) VALUES ({values}); ON CONFLICT ({columns}) DO UPDATE SET {', '.join(set_values)};"
 
     op_id = row["oid__id"]
     created_at = datetime.fromtimestamp(row["createdAt"]).strftime(
@@ -37,7 +37,7 @@ def build_query(row: pd.Series):
     )
 
     print(
-        build_sql_insert(
+        create_upsert(
             table_name="operations",
             columns=["op_id", "created_at", "updated_at", "last_sync"],
             values=[op_id, created_at, updated_at, last_sync],
@@ -56,7 +56,7 @@ def build_query(row: pd.Series):
         destination = item["to"]
 
         print(
-            build_sql_insert(
+            create_upsert(
                 table_name="tracking_events",
                 columns=[
                     "op_id",
