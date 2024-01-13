@@ -22,12 +22,9 @@ def build_sql_insert(table_name: str, columns: list, values: list):
     return f"INSERT INTO {table_name} ({columns}) VALUES ({values});"
 
 
-def build_query(file_id: str, row: pd.Series):
+def build_query(row: pd.Series):
     """Constrói a query SQL"""
 
-    file_id = datetime.strptime(file_id, "%Y%m%d-%H%M%S%f").strftime(
-        "%Y-%m-%d %H:%M:%S.%f"
-    )
     op_id = row["oid__id"]
     created_at = datetime.fromtimestamp(row["createdAt"]).strftime(
         "%Y-%m-%d %H:%M:%S.%f"
@@ -42,8 +39,8 @@ def build_query(file_id: str, row: pd.Series):
     print(
         build_sql_insert(
             table_name="operations",
-            columns=["file_id", "op_id", "created_at", "updated_at", "last_sync"],
-            values=[file_id, op_id, created_at, updated_at, last_sync],
+            columns=["op_id", "created_at", "updated_at", "last_sync"],
+            values=[op_id, created_at, updated_at, last_sync],
         )
     )
 
@@ -89,20 +86,16 @@ def process_file(csv_file: str):
     """Lê o arquivo CSV, processa as informações e deleta o arquivo"""
 
     df = pd.read_csv(csv_file)
-    file_name = csv_file.split("/")[-1][:-4]
+    # _ = csv_file.split("/")[-1][:-4]
 
     for _, row in df.iterrows():
-        build_query(file_name, row)
+        build_query(row)
         break
 
 
 if __name__ == "__main__":
     files = glob.glob(os.path.join("./data", "*.csv"))
 
-    for i in range(0, len(files), 5):
-        file_list = files[i : i + 5]
-
-        for file in file_list:
-            process_file(file)
-            break
+    for file in files:
+        process_file(file)
         break
