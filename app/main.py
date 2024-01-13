@@ -1,7 +1,6 @@
 """Script de extração dos dados"""
 
 import ast
-import json
 import os
 import glob
 from datetime import datetime
