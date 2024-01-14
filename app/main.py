@@ -23,7 +23,9 @@ def build_query(row: pd.Series):
         )
         set_values = [f"{c} = excluded.{c}" for c in columns.split(", ")]
 
-        return f"INSERT INTO {table_name} ({columns}) VALUES ({values}); ON CONFLICT ({columns}) DO UPDATE SET {', '.join(set_values)};"
+        return f"INSERT INTO {table_name} ({columns}) VALUES ({values}) ON CONFLICT ({columns}) DO UPDATE SET {', '.join(set_values)};"
+
+    query = "BEGIN;\n"
 
     op_id = row["oid__id"]
     created_at = datetime.fromtimestamp(row["createdAt"]).strftime(
@@ -36,13 +38,12 @@ def build_query(row: pd.Series):
         "%Y-%m-%d %H:%M:%S.%f"
     )
 
-    print(
-        create_upsert(
-            table_name="operations",
-            columns=["op_id", "created_at", "updated_at", "last_sync"],
-            values=[op_id, created_at, updated_at, last_sync],
-        )
+    operation_query = create_upsert(
+        table_name="operations",
+        columns=["id", "created_at", "updated_at", "last_sync"],
+        values=[op_id, created_at, updated_at, last_sync],
     )
+    query += f"{chr(9)}{operation_query}{chr(10)}"
 
     for item in ast.literal_eval(row["array_trackingEvents"]):
         created_at = datetime.fromtimestamp(
@@ -55,31 +56,34 @@ def build_query(row: pd.Series):
         origin = item["from"]
         destination = item["to"]
 
-        print(
-            create_upsert(
-                table_name="tracking_events",
-                columns=[
-                    "op_id",
-                    "tracking_code",
-                    "created_at",
-                    "status",
-                    "description",
-                    "tracker_type",
-                    "from",
-                    "to",
-                ],
-                values=[
-                    op_id,
-                    tracking_code,
-                    created_at,
-                    status,
-                    description,
-                    tracker_type,
-                    origin,
-                    destination,
-                ],
-            )
+        tracking_event = create_upsert(
+            table_name="tracking_events",
+            columns=[
+                "operation_id",
+                "tracking_code",
+                "created_at",
+                "status",
+                "description",
+                "tracker_type",
+                "origin",
+                "destination",
+            ],
+            values=[
+                op_id,
+                tracking_code,
+                created_at,
+                status,
+                description,
+                tracker_type,
+                origin,
+                destination,
+            ],
         )
+
+        query += f"{chr(9)}{tracking_event}{chr(10)}"
+
+    query += "COMMIT;"
+    print(query)
 
 
 def process_file(csv_file: str):
