@@ -22,8 +22,12 @@ def build_query(row: pd.Series):
             ]
         )
         set_values = [f"{c} = excluded.{c}" for c in columns.split(", ")]
+        query = f"""
+        INSERT INTO {table_name} ({columns})
+        VALUES ({values}) ON CONFLICT ({columns}) DO 
+        UPDATE SET {', '.join(set_values)};"""
 
-        return f"INSERT INTO {table_name} ({columns}) VALUES ({values}) ON CONFLICT ({columns}) DO UPDATE SET {', '.join(set_values)};"
+        return query
 
     query = "BEGIN;\n"
 
