@@ -83,7 +83,7 @@ def build_query(row: pd.Series):
         query += f"{chr(9)}{tracking_event}{chr(10)}"
 
     query += "COMMIT;"
-    print(query)
+    return query
 
 
 def process_file(csv_file: str):
@@ -93,7 +93,8 @@ def process_file(csv_file: str):
     # _ = csv_file.split("/")[-1][:-4]
 
     for _, row in df.iterrows():
-        build_query(row)
+        query = build_query(row)
+        print(query)
         break
 
 
