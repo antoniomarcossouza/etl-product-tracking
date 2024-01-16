@@ -6,6 +6,7 @@ import glob
 from datetime import datetime
 
 import pandas as pd
+import psycopg2
 
 
 def build_query(row: pd.Series):
@@ -96,9 +97,20 @@ def process_file(csv_file: str):
     df = pd.read_csv(csv_file)
     # _ = csv_file.split("/")[-1][:-4]
 
+    connection = psycopg2.connect(
+        user="postgres",
+        password="root",
+        host="localhost",
+        port="5432",
+        database="product_tracking",
+    )
+
+    cursor = connection.cursor()
+
     for _, row in df.iterrows():
         query = build_query(row)
         print(query)
+        # cursor.execute(query)
         break
 
 
