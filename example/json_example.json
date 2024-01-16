@@ -1,0 +1,134 @@
+[
+    {
+        "createdAt": {
+            "$date": 1690988754000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "EMISSAO",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "11d009795b1ee427c32cbfd57bf16791",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1690997971000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "TRANSFERENCIA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "11d009795b1ee427c32cbfd57bf16791",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691121860000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "ENTRADA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "edf72333f8c835fb3fdd6bff617a4d65",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691123833000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "ENTRADA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "1d1c443b2c522e1aa7f7a17813a9557e",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691125637000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "TRANSFERENCIA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "edf72333f8c835fb3fdd6bff617a4d65",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691202639000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "TRANSFERENCIA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "fac929278c0e5ba967802153ba729336",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691318427000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "PARADO NA FISCALIZACAO",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "1887409277b8317cbfc0d44fff59fbfa",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691401306000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "ENTRADA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "1887409277b8317cbfc0d44fff59fbfa",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691410874000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "TRANSFERENCIA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "1887409277b8317cbfc0d44fff59fbfa",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691486078000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "ENTRADA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "6958d7a0a7ff381d6ce77c7bc673b2db",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691489690000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "EM ROTA",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "6958d7a0a7ff381d6ce77c7bc673b2db",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    },
+    {
+        "createdAt": {
+            "$date": 1691572726000
+        },
+        "trackingCode": "9b72ac1ad8177bab5e3d6c4781e7b2ec",
+        "status": null,
+        "description": "ENTREGUE",
+        "trackerType": "202591c2658eb8db7d1c57e1273cd270",
+        "from": "6958d7a0a7ff381d6ce77c7bc673b2db",
+        "to": "6adf97f83acf6453d4a6a4b1070f3754"
+    }
+]
