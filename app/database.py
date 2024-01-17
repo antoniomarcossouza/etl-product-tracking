@@ -20,7 +20,7 @@ def upsert_operations_and_tracking_events(data: list) -> None:
         cur = connection.cursor()
 
         cur.executemany(
-            "CALL sp_upsert_operations_and_tracking_events(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            "CALL sp_upsert_deliveries_and_tracking_events(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             data,
         )
         connection.commit()
