@@ -97,3 +97,28 @@ DELETE FROM st_tracking_events;
 END IF;
 END;
 $$;
+
+CREATE OR REPLACE VIEW vw_trackings_per_minute AS
+SELECT
+    date_trunc('minute', created_at) AS minute,
+    count(*) AS total
+FROM t_deliveries
+GROUP BY minute
+ORDER BY total DESC;
+
+CREATE OR REPLACE VIEW vw_events_per_tracking_code AS
+SELECT
+    tracking_code,
+    COUNT(*) AS total
+FROM t_tracking_events
+GROUP BY tracking_code
+ORDER BY total DESC;
+
+CREATE OR REPLACE VIEW vw_top_ten_event_descriptions AS
+SELECT
+    description,
+    COUNT(*) AS total
+FROM t_tracking_events
+GROUP BY description
+ORDER BY total DESC
+LIMIT 10;
