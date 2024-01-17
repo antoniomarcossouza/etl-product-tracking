@@ -9,7 +9,7 @@ import pandas as pd
 def format_date(date: str) -> str:
     """Formata a data para o padrão do banco de dados"""
 
-    return datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S.%f")
+    return datetime.fromtimestamp(date)
 
 
 def create_values_string(values: list) -> str:
