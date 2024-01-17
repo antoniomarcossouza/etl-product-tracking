@@ -33,7 +33,7 @@ CREATE OR REPLACE PROCEDURE sp_upsert_operations_and_tracking_events(
 ) LANGUAGE plpgsql AS $$
 DECLARE i INT;
 BEGIN
-CREATE TEMP TABLE st_operations (LIKE t_operations);
+CREATE TEMP TABLE IF NOT EXISTS st_operations (LIKE t_operations);
 INSERT INTO st_operations (id, created_at, updated_at, last_sync_tracker)
 VALUES (
         _operation_id,
@@ -52,7 +52,8 @@ FROM st_operations
     LEFT JOIN t_operations ON t_operations.id = st_operations.id
 WHERE t_operations.id IS NULL;
 DELETE FROM st_operations;
-IF array_length(_tracking_event_tracking_codes, 1) IS NOT NULL THEN CREATE TEMP TABLE st_tracking_events (LIKE t_tracking_events);
+IF array_length(_tracking_event_tracking_codes, 1) IS NOT NULL THEN 
+CREATE TEMP TABLE IF NOT EXISTS st_tracking_events (LIKE t_tracking_events);
 FOR i IN 1..array_length(_tracking_event_tracking_codes, 1) LOOP
 INSERT INTO st_tracking_events (
         operation_id,
