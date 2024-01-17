@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "t_operations" (
+CREATE TABLE IF NOT EXISTS "t_deliveries" (
     "id" varchar PRIMARY KEY,
     "created_at" timestamp,
     "updated_at" timestamp,
@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS "t_tracking_events" (
     "destination" varchar
 );
 ALTER TABLE "t_tracking_events"
-ADD FOREIGN KEY ("operation_id") REFERENCES "t_operations" ("id");
+ADD FOREIGN KEY ("operation_id") REFERENCES "t_deliveries" ("id");
 
-CREATE OR REPLACE PROCEDURE sp_upsert_operations_and_tracking_events(
+CREATE OR REPLACE PROCEDURE sp_upsert_deliveries_and_tracking_events(
     _operation_id TEXT,
     _operation_created_at TIMESTAMP,
     _operation_updated_at TIMESTAMP,
@@ -33,25 +33,25 @@ CREATE OR REPLACE PROCEDURE sp_upsert_operations_and_tracking_events(
 ) LANGUAGE plpgsql AS $$
 DECLARE i INT;
 BEGIN
-CREATE TEMP TABLE IF NOT EXISTS st_operations (LIKE t_operations);
-INSERT INTO st_operations (id, created_at, updated_at, last_sync_tracker)
+CREATE TEMP TABLE IF NOT EXISTS st_deliveries (LIKE t_deliveries);
+INSERT INTO st_deliveries (id, created_at, updated_at, last_sync_tracker)
 VALUES (
         _operation_id,
         _operation_created_at,
         _operation_updated_at,
         _operation_last_sync_tracker
     );
-UPDATE t_operations
-SET updated_at = st_operations.updated_at,
-    last_sync_tracker = st_operations.last_sync_tracker
-FROM st_operations
-WHERE t_operations.id = st_operations.id;
-INSERT INTO t_operations
-SELECT st_operations.*
-FROM st_operations
-    LEFT JOIN t_operations ON t_operations.id = st_operations.id
-WHERE t_operations.id IS NULL;
-DELETE FROM st_operations;
+UPDATE t_deliveries
+SET updated_at = st_deliveries.updated_at,
+    last_sync_tracker = st_deliveries.last_sync_tracker
+FROM st_deliveries
+WHERE t_deliveries.id = st_deliveries.id;
+INSERT INTO t_deliveries
+SELECT st_deliveries.*
+FROM st_deliveries
+    LEFT JOIN t_deliveries ON t_deliveries.id = st_deliveries.id
+WHERE t_deliveries.id IS NULL;
+DELETE FROM st_deliveries;
 IF array_length(_tracking_event_tracking_codes, 1) IS NOT NULL THEN 
 CREATE TEMP TABLE IF NOT EXISTS st_tracking_events (LIKE t_tracking_events);
 FOR i IN 1..array_length(_tracking_event_tracking_codes, 1) LOOP
