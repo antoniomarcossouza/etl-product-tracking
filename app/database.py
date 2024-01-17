@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 
 
-def format_date(date: str) -> str:
+def format_date(date: int) -> datetime.datetime:
     """Formata a data para o padrão do banco de dados"""
 
     return datetime.fromtimestamp(date)
