@@ -5,10 +5,10 @@ from dataclasses import dataclass
 from datetime import datetime
 
 
-def format_date(date: int) -> datetime:
+def format_date(date: str) -> datetime:
     """Formata a data para o padrão do banco de dados"""
 
-    return datetime.fromtimestamp(date)
+    return datetime.fromtimestamp(int(date))
 
 
 @dataclass
@@ -33,8 +33,8 @@ class Delivery:
 
     def __init__(self, csv_row: list):
         self.id = csv_row[1]
-        self.created_at = csv_row[2]
-        self.updated_at = csv_row[3]
-        self.last_sync_tracker = csv_row[4]
+        self.created_at = format_date(csv_row[2])
+        self.updated_at = format_date(csv_row[3])
+        self.last_sync_tracker = format_date(csv_row[4])
 
         self.events = self.TrackingEvents(ast.literal_eval(csv_row[5]))

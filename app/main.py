@@ -17,8 +17,27 @@ def process_file(file_path: str):
         reader = csv.reader(csv_file, delimiter=",", quotechar='"')
 
         next(reader)
+
+        data = []
         for row in reader:
-            upsert_operations_and_tracking_events(Delivery(row))
+            row_class = Delivery(row)
+            data.append(
+                (
+                    row_class.id,
+                    row_class.created_at,
+                    row_class.updated_at,
+                    row_class.last_sync_tracker,
+                    row_class.events.tracking_codes,
+                    row_class.events.created_at,
+                    row_class.events.statuses,
+                    row_class.events.descriptions,
+                    row_class.events.tracker_types,
+                    row_class.events.origins,
+                    row_class.events.destinations,
+                )
+            )
+
+        upsert_operations_and_tracking_events(data)
 
 
 if __name__ == "__main__":
@@ -26,4 +45,3 @@ if __name__ == "__main__":
 
     for file in files:
         process_file(file)
-        break

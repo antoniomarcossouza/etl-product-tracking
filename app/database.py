@@ -2,10 +2,12 @@
 
 import psycopg2
 
-from delivery import Delivery
+
+class DatabaseError(Exception):
+    """Exception raised for database errors."""
 
 
-def upsert_operations_and_tracking_events(row: Delivery) -> None:
+def upsert_operations_and_tracking_events(data: list) -> None:
     """Função que executa a procedure no banco de dados"""
     try:
         connection = psycopg2.connect(
@@ -17,26 +19,14 @@ def upsert_operations_and_tracking_events(row: Delivery) -> None:
         )
         cur = connection.cursor()
 
-        cur.execute(
+        cur.executemany(
             "CALL sp_upsert_operations_and_tracking_events(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-            (
-                row.id,
-                row.created_at,
-                row.updated_at,
-                row.last_sync_tracker,
-                row.events.tracking_codes,
-                row.events.created_at,
-                row.events.statuses,
-                row.events.descriptions,
-                row.events.tracker_types,
-                row.events.origins,
-                row.events.destinations,
-            ),
+            data,
         )
         connection.commit()
         cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+    except psycopg2.DatabaseError as e:
+        print(e)
     finally:
-        if connection is not None:
+        if connection:
             connection.close()
