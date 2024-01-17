@@ -4,6 +4,7 @@ import ast
 from datetime import datetime
 
 import pandas as pd
+import psycopg2
 
 
 def format_date(date: int) -> datetime.datetime:
@@ -12,83 +13,59 @@ def format_date(date: int) -> datetime.datetime:
     return datetime.fromtimestamp(date)
 
 
-def create_values_string(values: list) -> str:
-    """Cria uma string com os valores para a query"""
+def upsert_operations_and_tracking_events(row: pd.Series) -> None:
+    """Função que executa a procedure no banco de dados"""
 
-    return ", ".join(
-        [
-            f"'{v}'" if isinstance(v, str) else "NULL" if v is None else str(v)
-            for v in values
+    try:
+        tracking_events = ast.literal_eval(row["array_trackingEvents"])
+
+        operation_id = row["oid__id"]
+        operation_created_at = format_date(row["createdAt"])
+        operation_updated_at = format_date(row["updatedAt"])
+        operation_last_sync_tracker = format_date(row["lastSyncTracker"])
+        tracking_event_tracking_codes = [
+            item["trackingCode"] for item in tracking_events
         ]
-    )
+        tracking_event_created_at = [
+            format_date(item["createdAt"]["$date"] / 1000) for item in tracking_events
+        ]
+        tracking_event_statuses = [item["status"] for item in tracking_events]
+        tracking_event_descriptions = [item["description"] for item in tracking_events]
+        tracking_event_tracker_types = [item["trackerType"] for item in tracking_events]
+        tracking_event_origins = [item["from"] for item in tracking_events]
+        tracking_event_destinations = [item["to"] for item in tracking_events]
 
+        connection = psycopg2.connect(
+            user="postgres",
+            password="root",
+            host="localhost",
+            port="5432",
+            database="product_tracking",
+        )
+        cur = connection.cursor()
 
-def create_tracking_events_values(fk: str, values: list):
-    """Agrupa os valores em uma string para a query"""
-
-    def format_item(item):
-        """Formata o evento de rastreio para a query"""
-
-        return create_values_string(
-            [
-                fk,
-                item["trackingCode"],
-                format_date(item["createdAt"]["$date"] / 1000),
-                item["status"],
-                item["description"],
-                item["trackerType"],
-                item["from"],
-                item["to"],
-            ]
+        cur.execute(
+            "CALL public.sp_upsert_operations_and_tracking_events(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            (
+                operation_id,
+                operation_created_at,
+                operation_updated_at,
+                operation_last_sync_tracker,
+                tracking_event_tracking_codes,
+                tracking_event_created_at,
+                tracking_event_statuses,
+                tracking_event_descriptions,
+                tracking_event_tracker_types,
+                tracking_event_origins,
+                tracking_event_destinations,
+            ),
         )
 
-    formatted_items = [f"({format_item(item)})" for item in values]
+        connection.commit()
 
-    return ", ".join(formatted_items)
-
-
-def build_query(row: pd.Series):
-    """Constrói a query para inserir a linha do DataFrame"""
-    if (ast.literal_eval(row['array_trackingEvents'])) == []:
-        return None
-
-    operation_values = [
-        row["oid__id"],
-        format_date(row["createdAt"]),
-        format_date(row["updatedAt"]),
-        format_date(row["lastSyncTracker"]),
-    ]
-
-    query = "BEGIN;\n"
-    query += "INSERT INTO st_operations (id, created_at, updated_at, last_sync_tracker)\n"
-    query += f"VALUES ({create_values_string(values=operation_values)});\n\n"
-
-    query += "UPDATE t_operations\n"
-    query += "SET updated_at = st_operations.updated_at, last_sync_tracker = st_operations.last_sync_tracker\n"
-    query += "FROM st_operations\n"
-    query += "WHERE t_operations.id = st_operations.id;\n\n"
-
-    query += "INSERT INTO t_operations\n"
-    query += "SELECT st_operations.*\n"
-    query += "FROM st_operations\n"
-    query += "LEFT JOIN t_operations ON t_operations.id = st_operations.id\n"
-    query += "WHERE t_operations.id IS NULL;\n\n"
-
-    query += "DELETE FROM st_operations;\n\n"
-
-    query += "INSERT INTO st_tracking_events (operation_id, tracking_code, created_at, status, description, tracker_type, origin, destination)\n"
-    query += f"VALUES {create_tracking_events_values(fk=row['oid__id'],values=ast.literal_eval(row['array_trackingEvents']))};\n\n"
-
-    query += "UPDATE t_tracking_events\n"
-    query += "SET status = st_tracking_events.status, description = st_tracking_events.description, tracker_type = st_tracking_events.tracker_type, origin = st_tracking_events.origin, destination = st_tracking_events.destination\n"
-    query += "FROM st_tracking_events\n"
-    query += "WHERE t_tracking_events.operation_id = st_tracking_events.operation_id AND t_tracking_events.tracking_code = st_tracking_events.tracking_code AND t_tracking_events.created_at = st_tracking_events.created_at;\n"
-
-    query += "INSERT INTO t_tracking_events\n"
-    query += "SELECT st_tracking_events.*\n"
-    query += "FROM st_tracking_events\n"
-    query += "LEFT JOIN t_tracking_events ON t_tracking_events.operation_id = st_tracking_events.operation_id AND t_tracking_events.tracking_code = st_tracking_events.tracking_code\n"
-    query += "WHERE t_tracking_events.operation_id IS NULL AND t_tracking_events.tracking_code IS NULL;\n"
-
-    query += "COMMIT;"
-    return query
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if connection is not None:
+            connection.close()

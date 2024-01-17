@@ -4,9 +4,8 @@ import os
 import glob
 
 import pandas as pd
-import psycopg2
 
-from database import build_query
+from database import upsert_operations_and_tracking_events
 
 
 def process_file(csv_file: str):
@@ -15,21 +14,8 @@ def process_file(csv_file: str):
     df = pd.read_csv(csv_file)
     # _ = csv_file.split("/")[-1][:-4]
 
-    connection = psycopg2.connect(
-        user="postgres",
-        password="root",
-        host="localhost",
-        port="5432",
-        database="product_tracking",
-    )
-
-    cursor = connection.cursor()
-
     for _, row in df.iterrows():
-        query = build_query(row)
-        print(query)
-        # cursor.execute(query)
-        break
+        upsert_operations_and_tracking_events(row)
 
 
 if __name__ == "__main__":
@@ -37,4 +23,3 @@ if __name__ == "__main__":
 
     for file in files:
         process_file(file)
-        break
