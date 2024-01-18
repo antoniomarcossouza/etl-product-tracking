@@ -18,6 +18,12 @@ CREATE TABLE IF NOT EXISTS "t_tracking_events" (
 ALTER TABLE "t_tracking_events"
 ADD FOREIGN KEY ("operation_id") REFERENCES "t_deliveries" ("id");
 
+CREATE TABLE IF NOT EXISTS "t_processed_files" (
+    "created_at" timestamp,
+    "started_at" timestamp,
+    "concluded_at" timestamp
+);
+
 CREATE OR REPLACE PROCEDURE sp_upsert_deliveries_and_tracking_events(
     _operation_id TEXT,
     _operation_created_at TIMESTAMP,

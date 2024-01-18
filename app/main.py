@@ -6,7 +6,7 @@ import glob
 from datetime import datetime
 
 from custom_logger import create_logger
-from database import upsert_operations_and_tracking_events
+from database import upsert_operations_and_tracking_events, log_processed_file
 from delivery import Delivery
 
 
@@ -49,6 +49,7 @@ if __name__ == "__main__":
         start = datetime.now()
         process_file(file)
         finish = datetime.now()
-        logger.info("Arquivo %s processado com sucesso.", file.split("/")[-1])
+        logger.info("Arquivo %s processado com sucesso.", file_name)
+        log_processed_file(file_name[:-4], start, finish)
         break
     logger.info("Todos os arquivos foram processados com sucesso.")
