@@ -4,6 +4,7 @@ import csv
 import os
 import glob
 
+from custom_logger import create_logger
 from database import upsert_operations_and_tracking_events
 from delivery import Delivery
 
@@ -36,12 +37,16 @@ def process_file(file_path: str):
                     row_class.events.destinations,
                 )
             )
-
         upsert_operations_and_tracking_events(data)
 
 
 if __name__ == "__main__":
     files = glob.glob(os.path.join("./data", "*.csv"))
 
+    logger = create_logger()
+
     for file in files:
         process_file(file)
+        logger.info("Arquivo %s processado com sucesso.", file.split("/")[-1])
+        break
+    logger.info("Todos os arquivos foram processados com sucesso.")
