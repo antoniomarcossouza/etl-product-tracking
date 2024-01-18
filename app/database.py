@@ -1,6 +1,10 @@
 """Módulo para construir a query de inserção no banco de dados"""
+import os
 
 import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class DatabaseError(Exception):
@@ -9,13 +13,15 @@ class DatabaseError(Exception):
 
 def upsert_operations_and_tracking_events(data: list) -> None:
     """Função que executa a procedure no banco de dados"""
+    connection = None
+
     try:
         connection = psycopg2.connect(
-            user="postgres",
-            password="root",
-            host="localhost",
-            port="5432",
-            database="product_tracking",
+            user=os.getenv("POSTGRES_USER"),
+            password=os.getenv("POSTGRES_PASSWORD"),
+            host=os.getenv("POSTGRES_HOST"),
+            port=os.getenv("POSTGRES_PORT"),
+            database=os.getenv("POSTGRES_DB"),
         )
         cur = connection.cursor()
 
