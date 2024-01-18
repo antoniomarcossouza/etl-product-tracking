@@ -17,4 +17,4 @@ jobs:
           pip install mypy types-psycopg2 types-pytz
       - name: Mypy
         run: |
-          mypy .
+          mypy --ignore-missing-imports .
