@@ -3,6 +3,7 @@
 import csv
 import os
 import glob
+from datetime import datetime
 
 from custom_logger import create_logger
 from database import upsert_operations_and_tracking_events
@@ -11,8 +12,6 @@ from delivery import Delivery
 
 def process_file(file_path: str):
     """Lê o arquivo CSV, processa as informações e deleta o arquivo"""
-
-    # _ = file_path.split("/")[-1][:-4]
 
     with open(file_path, "r", encoding="utf-8") as csv_file:
         reader = csv.reader(csv_file, delimiter=",", quotechar='"')
@@ -46,7 +45,10 @@ if __name__ == "__main__":
     logger = create_logger()
 
     for file in files:
+        file_name = file.split("/")[-1]
+        start = datetime.now()
         process_file(file)
+        finish = datetime.now()
         logger.info("Arquivo %s processado com sucesso.", file.split("/")[-1])
         break
     logger.info("Todos os arquivos foram processados com sucesso.")
