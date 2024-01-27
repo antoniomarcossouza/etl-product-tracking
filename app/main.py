@@ -1,9 +1,9 @@
 """Script de extração dos dados"""
 
 import csv
-from datetime import datetime
 import glob
 import os
+from datetime import datetime
 
 from custom_logger import create_logger
 from database import (
