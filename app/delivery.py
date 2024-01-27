@@ -19,7 +19,9 @@ class Delivery:
     class TrackingEvents:
         """Representa todos os eventos de rastreio de uma entrega"""
 
-        def __init__(self, tracking_events: list):
+        def __init__(
+            self: "Delivery.TrackingEvents", tracking_events: list
+        ) -> None:
             self.tracking_codes = [
                 item["trackingCode"] for item in tracking_events
             ]
@@ -37,7 +39,7 @@ class Delivery:
             self.origins = [item["from"] for item in tracking_events]
             self.destinations = [item["to"] for item in tracking_events]
 
-    def __init__(self, csv_row: list):
+    def __init__(self: "Delivery", csv_row: list) -> None:
         self.id = csv_row[1]
         self.created_at = format_date(csv_row[2])
         self.updated_at = format_date(csv_row[3])
