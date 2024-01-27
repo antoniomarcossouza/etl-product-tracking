@@ -1,6 +1,7 @@
 """Módulo para construir a query de inserção no banco de dados"""
 import os
 from datetime import datetime
+from typing import List, Tuple, Union
 
 import psycopg2
 from dotenv import load_dotenv
@@ -20,7 +21,9 @@ def create_database_connection() -> psycopg2.extensions.connection:
     )
 
 
-def execute_query(query: str, params: tuple, many: bool = False) -> None:
+def execute_query(
+    query: str, params: Union[Tuple, List[Tuple]], many: bool = False
+) -> None:
     """Função que executa uma query no banco de dados"""
     connection = None
 

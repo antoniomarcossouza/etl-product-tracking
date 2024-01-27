@@ -1,6 +1,7 @@
 """Módulo com logger customizado"""
 
 import logging
+from typing import Optional
 
 
 class CustomFormatter(logging.Formatter):
@@ -8,9 +9,9 @@ class CustomFormatter(logging.Formatter):
 
     def __init__(
         self: "CustomFormatter",
-        fmt: str = None,
-        datefmt: str = None,
-        timezone: str = None,
+        fmt: Optional[str] = None,
+        datefmt: Optional[str] = None,
+        timezone: Optional[str] = None,
     ) -> None:
         super().__init__(fmt, datefmt)
         self.timezone = timezone
