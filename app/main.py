@@ -44,7 +44,7 @@ def process_file(file_path: str) -> None:
 
 
 if __name__ == "__main__":
-    files = glob.glob(os.path.join("./data", "*.csv"))
+    files = glob.glob(os.path.join("/data", "*.csv"))
 
     logger = create_logger()
 
