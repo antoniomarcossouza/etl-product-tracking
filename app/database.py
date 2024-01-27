@@ -53,9 +53,9 @@ def check_already_processed(file_name: str) -> bool:
     connection = None
     try:
         connection = create_database_connection()
-        cur = connection.cursor()
+        cursor = connection.cursor()
 
-        cur.execute(
+        cursor.execute(
             """
             SELECT EXISTS(
                 SELECT 1 FROM t_processed_files WHERE created_at = %s
@@ -64,7 +64,7 @@ def check_already_processed(file_name: str) -> bool:
             (datetime.strptime(file_name, "%Y%m%d-%H%M%S%f"),),
         )
 
-        return cur.fetchone()[0]
+        return cursor.fetchone()[0]
 
     except psycopg2.Error as e:
         print("Unable to connect to the database")
@@ -72,8 +72,8 @@ def check_already_processed(file_name: str) -> bool:
         return False
 
     finally:
-        if cur:
-            cur.close()
+        if cursor:
+            cursor.close()
         if connection:
             connection.close()
 
