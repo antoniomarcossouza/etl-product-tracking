@@ -1,4 +1,4 @@
-"""Módulo para a classe que representa uma entrega e seus eventos de rastreio"""
+"""Classe que representa uma entrega e seus eventos de rastreio"""
 
 import ast
 from dataclasses import dataclass
@@ -20,14 +20,20 @@ class Delivery:
         """Representa todos os eventos de rastreio de uma entrega"""
 
         def __init__(self, tracking_events: list):
-            self.tracking_codes = [item["trackingCode"] for item in tracking_events]
+            self.tracking_codes = [
+                item["trackingCode"] for item in tracking_events
+            ]
             self.created_at = [
                 format_date(item["createdAt"]["$date"] / 1000)
                 for item in tracking_events
             ]
             self.statuses = [item["status"] for item in tracking_events]
-            self.descriptions = [item["description"] for item in tracking_events]
-            self.tracker_types = [item["trackerType"] for item in tracking_events]
+            self.descriptions = [
+                item["description"] for item in tracking_events
+            ]
+            self.tracker_types = [
+                item["trackerType"] for item in tracking_events
+            ]
             self.origins = [item["from"] for item in tracking_events]
             self.destinations = [item["to"] for item in tracking_events]
 

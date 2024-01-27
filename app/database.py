@@ -45,7 +45,7 @@ def execute_query(query: str, params: tuple, many: bool = False) -> None:
 
 
 def check_already_processed(file_name: str) -> bool:
-    """Função que verifica se um valor existe em uma coluna de uma tabela do banco de dados"""
+    """Função que verifica se o arquivo já foi processado"""
 
     connection = None
     try:
@@ -53,7 +53,11 @@ def check_already_processed(file_name: str) -> bool:
         cur = connection.cursor()
 
         cur.execute(
-            "SELECT EXISTS(SELECT 1 FROM t_processed_files WHERE created_at = %s)",
+            """
+            SELECT EXISTS(
+                SELECT 1 FROM t_processed_files WHERE created_at = %s
+            )
+            """,
             (datetime.strptime(file_name, "%Y%m%d-%H%M%S%f"),),
         )
 
@@ -77,8 +81,15 @@ def log_processed_file(
     """Função que insere o nome do arquivo processado no banco de dados"""
 
     execute_query(
-        "INSERT INTO t_processed_files (created_at, started_at,concluded_at) VALUES (%s,%s,%s)",
-        (datetime.strptime(file_name, "%Y%m%d-%H%M%S%f"), started_at, concluded_at),
+        """
+        INSERT INTO t_processed_files (created_at, started_at,concluded_at)
+        VALUES (%s,%s,%s)
+        """,
+        (
+            datetime.strptime(file_name, "%Y%m%d-%H%M%S%f"),
+            started_at,
+            concluded_at,
+        ),
     )
 
 
@@ -86,7 +97,11 @@ def upsert_operations_and_tracking_events(data: list) -> None:
     """Função que executa a procedure no banco de dados"""
 
     execute_query(
-        "CALL sp_upsert_deliveries_and_tracking_events(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+        """
+        CALL sp_upsert_deliveries_and_tracking_events(
+            %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+        )
+        """,
         data,
         many=True,
     )

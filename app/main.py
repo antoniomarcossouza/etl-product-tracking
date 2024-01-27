@@ -1,15 +1,15 @@
 """Script de extração dos dados"""
 
 import csv
-import os
-import glob
 from datetime import datetime
+import glob
+import os
 
 from custom_logger import create_logger
 from database import (
-    upsert_operations_and_tracking_events,
-    log_processed_file,
     check_already_processed,
+    log_processed_file,
+    upsert_operations_and_tracking_events,
 )
 from delivery import Delivery
 

@@ -17,7 +17,9 @@ class CustomFormatter(logging.Formatter):
         """Função que formata a timestamp para um fuso horário específico"""
         current_datetime = datetime.fromtimestamp(record.created, tz=pytz.utc)
         if self.timezone:
-            current_datetime = current_datetime.astimezone(pytz.timezone(self.timezone))
+            current_datetime = current_datetime.astimezone(
+                pytz.timezone(self.timezone)
+            )
 
         if self.datefmt:
             time = current_datetime.strftime(self.datefmt)
